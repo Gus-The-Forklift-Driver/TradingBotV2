@@ -28,5 +28,4 @@ class buyTheRed:
                 amount = (
                     marketData.open[candle] / marketData.close[candle] - 1)*self.vars['BuyMultiplier']
                 dataframe[candle] = amount
-        print(dataframe)
         return dataframe

@@ -30,7 +30,6 @@ class backendTest():
                 amount = self.wallet.balanceBTC*BuynSell[candle]*-1
                 try:
                     fees = self.wallet.sellMarket(price, amount)
-                    print(fees)
                 except ValueError:
                     pass
                 else:

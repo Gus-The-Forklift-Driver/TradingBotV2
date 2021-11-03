@@ -6,6 +6,7 @@ import dearpygui.dearpygui as dpg
 class ui():
     def __init__(self):
         dpg.create_context()
+        dpg.configure_app(init_file="dpg.ini")
         dpg.create_viewport(title='Trading Bot V2 Viz', width=960, height=540)
         with dpg.window(tag='main_window'):
             pass
@@ -81,6 +82,13 @@ class ui():
                         dpg.add_text('Sells')
                         dpg.add_text(tag='sells',
                                      default_value=backend['SellOperations'])
+
+        with dpg.menu_bar(parent='main_window'):
+            with dpg.menu(label="File"):
+                dpg.add_menu_item(
+                    label="Save layout", callback=lambda: dpg.save_init_file("dpg.ini"))
+                dpg.add_menu_item(
+                    label="Quit", callback=lambda: dpg.destroy_context())
 
     def updateTest(self, marketData, results):
         # update the graphs

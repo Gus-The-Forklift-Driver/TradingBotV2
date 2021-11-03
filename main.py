@@ -24,8 +24,6 @@ results = backend.runTest()
 
 
 def update(sender, app_data, user_data):
-    print(sender)
-    print(app_data)
     parameters[sender] = int(app_data)
     backend.updateParameters(parameters)
     results = backend.runTest()

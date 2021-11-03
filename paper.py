@@ -30,7 +30,6 @@ class wallet:
         fee = 0
         if BTCAmount == 'max':
             BTCAmount = self.balanceBTC
-        print(BTCAmount)
         if BTCAmount < self.minimumTradeAmount:
             raise ValueError("Trade amount not enough")
         else:
