@@ -56,14 +56,19 @@ class ui():
                 with dpg.table(header_row=False, borders_innerH=True, borders_innerV=True):
                     dpg.add_table_column()
                     dpg.add_table_column()
+
                     with dpg.table_row():
                         dpg.add_text('Total gains')
                         dpg.add_text(
-                            tag='total_gains', default_value=backend['BalanceOverTime'][-1]-backend['BalanceOverTime'][0])
+                            tag='total_gains', default_value=backend['BalanceOverTime'][-1]-backend['BalanceOverTime'][0]-backend['fees'])
                     with dpg.table_row():
                         dpg.add_text('Total fees')
                         dpg.add_text(
                             tag='total_fees', default_value=backend['fees'])
+                    with dpg.table_row():
+                        dpg.add_text('Cumulated gains')
+                        dpg.add_text(
+                            tag='cumulated_gains', default_value=backend['BalanceOverTime'][-1]-backend['BalanceOverTime'][0])
                     with dpg.table_row():
                         dpg.add_text('Transactions')
                         dpg.add_text(tag='transactions',
@@ -78,14 +83,18 @@ class ui():
                                      default_value=backend['SellOperations'])
 
     def updateTest(self, marketData, results):
+        # update the graphs
         dpg.set_value('balance_over_time', [
                       marketData.time, results['BalanceOverTime']])
         dpg.set_value('eur_over_time', [
                       marketData.time, results['EurOverTime']])
+        # update the value table
         dpg.set_value(
-            'total_gains', results['BalanceOverTime'][-1]-results['BalanceOverTime'][0])
+            'total_gains', results['BalanceOverTime'][-1]-results['BalanceOverTime'][0]-results['fees'])
         dpg.set_value('total_fees',
                       results['fees'])
+        dpg.set_value(
+            'cumulated_gains', results['BalanceOverTime'][-1]-results['BalanceOverTime'][0])
         dpg.set_value('transactions',
                       results['BuyOperations']+results['SellOperations'])
         dpg.set_value('buys',

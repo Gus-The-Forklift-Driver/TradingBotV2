@@ -1,7 +1,10 @@
 class buyTheRed:
-    def __init__(self, parameters={"consecutiveGreen": 1, "consecutiveRed": 2, "multiplier": 5}):
+    # this strategy buys when the price is dropping and sells when it's going up
+    def __init__(self, parameters={"consecutiveGreen": 1, "consecutiveRed": 2, "BuyMultiplier": 50, 'SellMultiplier': 50}):
+        # these are the parameters of the strategy
         self.vars = parameters
 
+    # this function create an array of values beetween -1 et 1 meaning the buys and sell orders
     def populate_buy_sell(self, marketData):
         dataframe = [0]*marketData.lenght
 
@@ -18,12 +21,12 @@ class buyTheRed:
             if consecutiveGreen >= self.vars["consecutiveGreen"]:
 
                 amount = (
-                    marketData.open[candle] / marketData.close[candle] - 1)*self.vars["multiplier"]
+                    marketData.open[candle] / marketData.close[candle] - 1)*self.vars['SellMultiplier']
                 dataframe[candle] = amount
 
             if consecutiveRed >= self.vars["consecutiveRed"]:
                 amount = (
-                    marketData.open[candle] / marketData.close[candle] - 1)*self.vars["multiplier"]
+                    marketData.open[candle] / marketData.close[candle] - 1)*self.vars['BuyMultiplier']
                 dataframe[candle] = amount
         print(dataframe)
         return dataframe

@@ -8,7 +8,8 @@ import strategy
 BTCEUR = marketData(btcEur)
 
 # parameters of the strategy
-parameters = {"consecutiveGreen": 1, "consecutiveRed": 2, "multiplier": 5}
+parameters = {"consecutiveGreen": 2, "consecutiveRed": 3,
+              "BuyMultiplier": 100, 'SellMultiplier': 25}
 
 # assign the strategy
 test1 = strategy.buyTheRed(parameters)
