@@ -41,3 +41,5 @@ class marketData():
             self.close.append(float(candles[4]))
             self.volume.append(float(candles[5]))
             self.trades.append(float(candles[8]))
+        self.highestPrice = max(self.high)
+        self.lowestPrice = min(self.low)

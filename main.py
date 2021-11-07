@@ -3,13 +3,13 @@ from marketData import btcEur
 from ui import ui
 from backend import backendTest
 import strategy
-from secret import ReadOnly
+from secret import ReadAndWrite
 from binance.client import Client
 
-client = Client(ReadOnly['Api Key'], ReadOnly['Secret Key'])
+client = Client(ReadAndWrite['Api Key'], ReadAndWrite['Secret Key'])
 
 # get and create the market data
-btcEur = client.get_klines(symbol='BTCEUR', interval='15m', limit=1000)
+btcEur = client.get_klines(symbol='BTCEUR', interval='5m', limit=100)
 BTCEUR = marketData(btcEur)
 
 # parameters of the strategy

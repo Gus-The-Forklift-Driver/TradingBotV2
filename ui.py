@@ -14,6 +14,7 @@ class ui():
     def show_ui(self):
         dpg.setup_dearpygui()
         dpg.set_primary_window('main_window', True)
+        dpg.show_implot_demo()
         dpg.show_viewport()
         dpg.start_dearpygui()
         dpg.destroy_context()
@@ -61,11 +62,11 @@ class ui():
                     with dpg.table_row():
                         dpg.add_text('Total gains')
                         dpg.add_text(
-                            tag='total_gains', default_value=backend['BalanceOverTime'][-1]-backend['BalanceOverTime'][0]-backend['fees'])
+                            tag='total_gains', default_value=backend['BalanceOverTime'][-1]-backend['BalanceOverTime'][0]-backend['Fees'])
                     with dpg.table_row():
                         dpg.add_text('Total fees')
                         dpg.add_text(
-                            tag='total_fees', default_value=backend['fees'])
+                            tag='total_fees', default_value=backend['Fees'])
                     with dpg.table_row():
                         dpg.add_text('Cumulated gains')
                         dpg.add_text(
@@ -98,9 +99,9 @@ class ui():
                       marketData.time, results['EurOverTime']])
         # update the value table
         dpg.set_value(
-            'total_gains', results['BalanceOverTime'][-1]-results['BalanceOverTime'][0]-results['fees'])
+            'total_gains', results['BalanceOverTime'][-1]-results['BalanceOverTime'][0]-results['Fees'])
         dpg.set_value('total_fees',
-                      results['fees'])
+                      results['Fees'])
         dpg.set_value(
             'cumulated_gains', results['BalanceOverTime'][-1]-results['BalanceOverTime'][0])
         dpg.set_value('transactions',
