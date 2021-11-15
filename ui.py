@@ -14,7 +14,7 @@ class ui():
     def show_ui(self):
         dpg.setup_dearpygui()
         dpg.set_primary_window('main_window', True)
-        dpg.show_implot_demo()
+        # dpg.show_implot_demo()
         dpg.show_viewport()
         dpg.start_dearpygui()
         dpg.destroy_context()
