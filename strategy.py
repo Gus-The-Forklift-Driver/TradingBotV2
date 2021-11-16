@@ -29,3 +29,13 @@ class buyTheRed:
                     marketData.open[candle] / marketData.close[candle] - 1)*self.vars['BuyMultiplier']
                 dataframe[candle] = amount
         return dataframe
+
+
+class diamondHands:
+    def __init__(self, parameters={}):
+        self.vars = parameters
+
+    def populate_buy_sell(self, marketData):
+        dataframe = [0]*marketData.lenght
+        dataframe[0] = 1
+        return dataframe

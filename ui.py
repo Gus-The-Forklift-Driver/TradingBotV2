@@ -54,35 +54,39 @@ class ui():
                             tag='balance_over_time', label='blance over time', x=marketData.time, y=backend['BalanceOverTime'])
                         dpg.add_line_series(
                             tag='eur_over_time', label='eur_over_time', x=marketData.time, y=backend['EurOverTime'])
+                        dpg.add_line_series(tag='compared_performance', label='compared_performance',
+                                            x=marketData.time, y=backend['ComparedPerformance'])
                 # create stats
                 with dpg.table(header_row=False, borders_innerH=True, borders_innerV=True):
                     dpg.add_table_column()
                     dpg.add_table_column()
 
-                    with dpg.table_row():
-                        dpg.add_text('Total gains')
-                        dpg.add_text(
-                            tag='total_gains', default_value=backend['BalanceOverTime'][-1]-backend['BalanceOverTime'][0]-backend['Fees'])
-                    with dpg.table_row():
-                        dpg.add_text('Total fees')
-                        dpg.add_text(
-                            tag='total_fees', default_value=backend['Fees'])
-                    with dpg.table_row():
-                        dpg.add_text('Cumulated gains')
-                        dpg.add_text(
-                            tag='cumulated_gains', default_value=backend['BalanceOverTime'][-1]-backend['BalanceOverTime'][0])
-                    with dpg.table_row():
-                        dpg.add_text('Transactions')
-                        dpg.add_text(tag='transactions',
-                                     default_value=backend['BuyOperations']+backend['SellOperations'])
-                    with dpg.table_row():
-                        dpg.add_text('Buys')
-                        dpg.add_text(tag='buys',
-                                     default_value=backend['BuyOperations'])
-                    with dpg.table_row():
-                        dpg.add_text('Sells')
-                        dpg.add_text(tag='sells',
-                                     default_value=backend['SellOperations'])
+                    # with dpg.table_row():
+                    #    dpg.add_text('Total gains')
+                    #    dpg.add_text(
+                    #        tag='total_gains', default_value=backend['TotalGains'])
+                    # with dpg.table_row():
+                    #    dpg.add_text('Total fees')
+                    #    dpg.add_text(
+                    #        tag='total_fees', default_value=backend['Fees'])
+                    # with dpg.table_row():
+                    #    dpg.add_text('Cumulated gains')
+                    #    dpg.add_text(
+                    #        tag='cumulated_gains', default_value=backend['CumulatedGains'])
+                    # with dpg.table_row():
+                    #    dpg.add_text('Buys')
+                    #    dpg.add_text(tag='buys',
+                    #                 default_value=backend['BuyOperations'])
+                    # with dpg.table_row():
+                    #    dpg.add_text('Sells')
+                    #    dpg.add_text(tag='sells',
+                    #                 default_value=backend['SellOperations'])
+                    for result in backend:
+                        if type(backend[result]) == int or type(backend[result]) == float:
+                            with dpg.table_row():
+                                dpg.add_text(str(result))
+                                dpg.add_text(tag=str(result),
+                                             default_value=backend[result])
 
         with dpg.menu_bar(parent='main_window'):
             with dpg.menu(label="File"):
@@ -97,16 +101,9 @@ class ui():
                       marketData.time, results['BalanceOverTime']])
         dpg.set_value('eur_over_time', [
                       marketData.time, results['EurOverTime']])
+        dpg.set_value('compared_performance', [
+                      marketData.time, results['ComparedPerformance']])
         # update the value table
-        dpg.set_value(
-            'total_gains', results['BalanceOverTime'][-1]-results['BalanceOverTime'][0]-results['Fees'])
-        dpg.set_value('total_fees',
-                      results['Fees'])
-        dpg.set_value(
-            'cumulated_gains', results['BalanceOverTime'][-1]-results['BalanceOverTime'][0])
-        dpg.set_value('transactions',
-                      results['BuyOperations']+results['SellOperations'])
-        dpg.set_value('buys',
-                      results['BuyOperations'])
-        dpg.set_value('sells',
-                      results['SellOperations'])
+        for result in results:
+            if type(results[result]) == int or type(results[result]) == float:
+                dpg.set_value(str(result), results[result])
