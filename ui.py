@@ -26,7 +26,7 @@ class ui():
             dpg.add_table_column()
             with dpg.table_row():
                 # create main graph
-                with dpg.plot(tag='candle_plot', width=-1, height=600):
+                with dpg.plot(tag='candle_plot', width=-1, height=400):
                     dpg.add_plot_legend()
                     xAxis = dpg.add_plot_axis(
                         dpg.mvXAxis, label='Dates', time=True)
@@ -45,42 +45,20 @@ class ui():
                                 tag=str(key), decimal=True, default_value=strategy.vars[key],
                                 callback=callback)
             with dpg.table_row():
-                # create subplot
+                # create subplots
                 with dpg.plot(width=-1, height=-1):
                     dpg.add_plot_legend()
                     xAxis = dpg.add_plot_axis(dpg.mvXAxis, time=True)
                     with dpg.plot_axis(dpg.mvYAxis, label='balanceOverTime'):
-                        dpg.add_line_series(
-                            tag='balance_over_time', label='blance over time', x=marketData.time, y=backend['BalanceOverTime'])
-                        dpg.add_line_series(
-                            tag='eur_over_time', label='eur_over_time', x=marketData.time, y=backend['EurOverTime'])
-                        dpg.add_line_series(tag='compared_performance', label='compared_performance',
-                                            x=marketData.time, y=backend['ComparedPerformance'])
+                        for result in backend:
+                            if type(backend[result]) == list:
+                                dpg.add_line_series(tag=str(result), label=str(
+                                    result), x=marketData.time, y=backend[result])
+
                 # create stats
                 with dpg.table(header_row=False, borders_innerH=True, borders_innerV=True):
                     dpg.add_table_column()
                     dpg.add_table_column()
-
-                    # with dpg.table_row():
-                    #    dpg.add_text('Total gains')
-                    #    dpg.add_text(
-                    #        tag='total_gains', default_value=backend['TotalGains'])
-                    # with dpg.table_row():
-                    #    dpg.add_text('Total fees')
-                    #    dpg.add_text(
-                    #        tag='total_fees', default_value=backend['Fees'])
-                    # with dpg.table_row():
-                    #    dpg.add_text('Cumulated gains')
-                    #    dpg.add_text(
-                    #        tag='cumulated_gains', default_value=backend['CumulatedGains'])
-                    # with dpg.table_row():
-                    #    dpg.add_text('Buys')
-                    #    dpg.add_text(tag='buys',
-                    #                 default_value=backend['BuyOperations'])
-                    # with dpg.table_row():
-                    #    dpg.add_text('Sells')
-                    #    dpg.add_text(tag='sells',
-                    #                 default_value=backend['SellOperations'])
                     for result in backend:
                         if type(backend[result]) == int or type(backend[result]) == float:
                             with dpg.table_row():
@@ -95,15 +73,18 @@ class ui():
                 dpg.add_menu_item(
                     label="Quit", callback=lambda: dpg.destroy_context())
 
-    def updateTest(self, marketData, results):
+    def updateTest(self, marketData, backend):
         # update the graphs
-        dpg.set_value('balance_over_time', [
-                      marketData.time, results['BalanceOverTime']])
-        dpg.set_value('eur_over_time', [
-                      marketData.time, results['EurOverTime']])
-        dpg.set_value('compared_performance', [
-                      marketData.time, results['ComparedPerformance']])
+        #
+        # dpg.set_value('balance_over_time', [
+        #              marketData.time, backend['BalanceOverTime']])
+        # dpg.set_value('eur_over_time', [
+        #              marketData.time, backend['EurOverTime']])
+        # dpg.set_value('compared_performance', [
+        #              marketData.time, backend['ComparedPerformance']])
         # update the value table
-        for result in results:
-            if type(results[result]) == int or type(results[result]) == float:
-                dpg.set_value(str(result), results[result])
+        for result in backend:
+            if type(backend[result]) == int or type(backend[result]) == float:
+                dpg.set_value(str(result), backend[result])
+            elif type(backend[result]) == list:
+                dpg.set_value(str(result), [marketData.time, backend[result]])

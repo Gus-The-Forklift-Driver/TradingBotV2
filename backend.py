@@ -19,8 +19,8 @@ class backendTest():
                        'EurOverTime': [],
                        'BtcOverTime': [],
                        'BalanceOverTime': [],
-                       'ComparedPerformance': [],
-                       'CumulativePerformance': 0
+                       'BotPerformance': [],
+                       'CumulativeBotPerformance': 0
                        }
         BuynSell = self.strategy.populate_buy_sell(marketData)
 
@@ -33,7 +33,13 @@ class backendTest():
                 try:
                     fees = self.wallet.buyMarket(price, amount)
                 except ValueError:
-                    pass
+                    try:
+                        fees = self.wallet.buyMarket(price)
+                    except ValueError:
+                        pass
+                    else:
+                        testResults['Fees'] += fees
+                        testResults['BuyOperations'] += 1
                 else:
                     testResults['Fees'] += fees
                     testResults['BuyOperations'] += 1
@@ -43,7 +49,13 @@ class backendTest():
                 try:
                     fees = self.wallet.sellMarket(price, amount)
                 except ValueError:
-                    pass
+                    try:
+                        fees = self.wallet.sellMarket(price)
+                    except ValueError:
+                        pass
+                    else:
+                        testResults['Fees'] += fees
+                        testResults['SellOperations'] += 1
                 else:
                     testResults['Fees'] += fees
                     testResults['SellOperations'] += 1
@@ -57,17 +69,16 @@ class backendTest():
                 (marketData.close[candle] - marketData.open[candle])/marketData.open[candle])*100
             BotPerformance = ((testResults['BalanceOverTime'][-1] -
                                previousBalance)/previousBalance)*100
-            testResults['ComparedPerformance'].append((
-                BtcPerformance - BotPerformance))
+            testResults['BotPerformance'].append(BotPerformance)
             previousBalance = self.wallet.balanceEUR+self.wallet.balanceBTC*price
-            testResults['CumulativePerformance'] += BtcPerformance - \
-                BotPerformance
+            testResults['CumulativeBotPerformance'] += BotPerformance
 
         # logs test results
         testResults['CumulatedGains'] = testResults['BalanceOverTime'][-1] - \
             testResults['BalanceOverTime'][0]
         testResults['TotalGains'] = testResults['CumulatedGains'] - \
             testResults['Fees']
+
         return testResults
 
     def updateParameters(self, parameters):

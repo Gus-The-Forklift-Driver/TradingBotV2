@@ -21,7 +21,7 @@ class wallet:
                 raise ValueError("Trade amount not enough")
             newEurBalance = self.balanceEUR - EURAmount
             if newEurBalance < 0:
-                raise ValueError('specified amount too high')
+                raise ValueError('Specified amount too high')
             self.balanceBTC += BTCAmount
             self.balanceEUR = newEurBalance
             return fee
