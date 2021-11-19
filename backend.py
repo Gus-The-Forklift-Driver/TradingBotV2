@@ -26,6 +26,7 @@ class backendTest():
 
         # iterate through the market data
         previousBalance = self.wallet.balanceEUR
+        previousPerformance = 0
         for candle in range(marketData.lenght):
             price = marketData.close[candle]
             if BuynSell[candle] > 0 and self.wallet.balanceEUR > 0:
@@ -69,9 +70,11 @@ class backendTest():
                 (marketData.close[candle] - marketData.open[candle])/marketData.open[candle])*100
             BotPerformance = ((testResults['BalanceOverTime'][-1] -
                                previousBalance)/previousBalance)*100
-            testResults['BotPerformance'].append(BotPerformance)
+            testResults['BotPerformance'].append(
+                BotPerformance + previousPerformance)
             previousBalance = self.wallet.balanceEUR+self.wallet.balanceBTC*price
             testResults['CumulativeBotPerformance'] += BotPerformance
+            previousPerformance = BotPerformance
 
         # logs test results
         testResults['CumulatedGains'] = testResults['BalanceOverTime'][-1] - \

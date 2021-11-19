@@ -9,17 +9,17 @@ from binance.client import Client
 client = Client(ReadAndWrite['Api Key'], ReadAndWrite['Secret Key'])
 
 # get and create the market data
-btcEur = client.get_klines(symbol='BTCEUR', interval='1d', limit=500)
+btcEur = client.get_klines(symbol='BTCEUR', interval='15m', limit=100)
 BTCEUR = marketData(btcEur)
 
 # parameters of the strategy
 parameters = {"consecutiveGreen": 2, "consecutiveRed": 3,
               "BuyMultiplier": 100, 'SellMultiplier': 25}
 
-#parameters = {}
+parameters = {}
 
 # assign the strategy
-test1 = strategy.buyTheRed(parameters)
+test1 = strategy.diamondHands(parameters)
 
 # create the backend strategy
 backend = backendTest(test1)
