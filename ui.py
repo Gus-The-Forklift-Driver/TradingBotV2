@@ -19,6 +19,11 @@ class ui():
         dpg.start_dearpygui()
         dpg.destroy_context()
 
+    def update_draggable_line(self, sender):
+        val = dpg.get_value(sender)
+        dpg.set_value('d_line', val)
+        dpg.set_value('d_line_sub', val)
+
     def create_main_ui(self, marketData, strategy, callback, backend):
         with dpg.table(parent='main_window', tag='table', header_row=False, resizable=True,
                        borders_outerH=True, borders_innerH=True, borders_innerV=True, borders_outerV=True):
@@ -28,6 +33,8 @@ class ui():
                 # create main graph
                 with dpg.plot(tag='candle_plot', width=-1, height=400):
                     dpg.add_plot_legend()
+                    dpg.add_drag_line(
+                        tag='d_line', callback=self.update_draggable_line, default_value=marketData.time[5])
                     xAxis = dpg.add_plot_axis(
                         dpg.mvXAxis, label='Dates', time=True)
                     with dpg.plot_axis(dpg.mvYAxis, label='EUR'):
@@ -48,6 +55,8 @@ class ui():
                 # create subplots
                 with dpg.plot(width=-1, height=-1):
                     dpg.add_plot_legend()
+                    dpg.add_drag_line(
+                        tag='d_line_sub', callback=self.update_draggable_line, default_value=marketData.time[5])
                     xAxis = dpg.add_plot_axis(dpg.mvXAxis, time=True)
                     with dpg.plot_axis(dpg.mvYAxis, label='balanceOverTime'):
                         for result in backend:
