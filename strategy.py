@@ -39,3 +39,11 @@ class diamondHands:
         dataframe = [0]*marketData.lenght
         dataframe[0] = 1
         return dataframe
+
+class gridTrading:
+    def __init__(self,parameters={}):
+        self.vars=parameters
+    def populate_buy_sell(self,marketData):
+        marketData.high
+        dataframe= [0]*marketData.lenght
+        return dataframe
