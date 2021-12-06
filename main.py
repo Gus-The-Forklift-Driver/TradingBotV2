@@ -9,7 +9,7 @@ from binance.client import Client
 client = Client(ReadAndWrite['Api Key'], ReadAndWrite['Secret Key'])
 
 # get and create the market data
-btcEur = client.get_klines(symbol='BTCEUR', interval='15m', limit=100)
+btcEur = client.get_klines(symbol='BTCEUR', interval='15m', limit=200)
 BTCEUR = marketData(btcEur)
 
 # parameters of the strategy
