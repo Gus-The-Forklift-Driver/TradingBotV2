@@ -1,0 +1,3 @@
+- set start and end
+- add buy and sell indicators
+- put everything on one graph

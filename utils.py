@@ -43,3 +43,5 @@ class marketData():
             self.trades.append(float(candles[8]))
         self.highestPrice = max(self.high)
         self.lowestPrice = min(self.low)
+        self.start = self.time[0]
+        self.end = self.time[-1]

@@ -20,10 +20,13 @@ class backendTest():
                        'BtcOverTime': [],
                        'BalanceOverTime': [],
                        'BotPerformance': [],
-                       'CumulativeBotPerformance': 0
+                       'buysNsells': [],
+                       'CumulativeBotPerformance': 0,
+                       'CumulativeBtcPerformance': 0
                        }
         BuynSell = self.strategy.populate_buy_sell(marketData)
 
+        testResults['buysNsells'] = [0]*marketData.lenght
         # iterate through the market data
         previousBalance = self.wallet.balanceEUR
         previousPerformance = 0
@@ -41,9 +44,11 @@ class backendTest():
                     else:
                         testResults['Fees'] += fees
                         testResults['BuyOperations'] += 1
+                        testResults['buysNsells'][candle] = amount
                 else:
                     testResults['Fees'] += fees
                     testResults['BuyOperations'] += 1
+                    testResults['buysNsells'][candle] = amount
 
             elif BuynSell[candle] < 0 and self.wallet.balanceBTC > 0:
                 amount = self.wallet.balanceBTC*BuynSell[candle]*-1
@@ -57,9 +62,11 @@ class backendTest():
                     else:
                         testResults['Fees'] += fees
                         testResults['SellOperations'] += 1
+                        testResults['buysNsells'][candle] = -amount * price
                 else:
                     testResults['Fees'] += fees
                     testResults['SellOperations'] += 1
+                    testResults['buysNsells'][candle] = -amount * price
             # logs current progress
             testResults['EurOverTime'].append(self.wallet.balanceEUR)
             testResults['BtcOverTime'].append(self.wallet.balanceBTC)
@@ -74,6 +81,7 @@ class backendTest():
                 BotPerformance + previousPerformance)
             previousBalance = self.wallet.balanceEUR+self.wallet.balanceBTC*price
             testResults['CumulativeBotPerformance'] += BotPerformance
+            testResults['CumulativeBtcPerformance'] += BtcPerformance
             previousPerformance = BotPerformance
 
         # logs test results
