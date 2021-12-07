@@ -10,10 +10,11 @@ class ui():
         dpg.create_viewport(title='Trading Bot V2 Viz', width=960, height=540)
         with dpg.window(tag='main_window'):
             pass
+        self.annotations = []
 
     def show_ui(self):
         dpg.setup_dearpygui()
-        #dpg.set_primary_window('main_window', True)
+        dpg.set_primary_window('main_window', True)
         # dpg.show_implot_demo()
         # dpg.show_imgui_demo()
         dpg.configure_app(docking=True)
@@ -97,13 +98,18 @@ class ui():
             elif type(backend[result]) == list:
                 dpg.set_value(str(result), [marketData.time, backend[result]])
 
+        print(self.annotations)
+        for i in self.annotations:
+            dpg.delete_item(i)
+        self.annotations = []
         for candle in range(len(backend['buysNsells'])):
+
             # buy operation
             backend['buysNsells'][candle]
             if backend['buysNsells'][candle] > 0:
-                dpg.add_plot_annotation(label="", default_value=(
-                    marketData.time[candle], marketData.high[candle]), offset=(0, -20), color=[0, 255, 0, 255], parent='candle_plot')
+                self.annotations.append(dpg.add_plot_annotation(label="", default_value=(
+                    marketData.time[candle], marketData.high[candle]), offset=(0, -20), color=[0, 255, 0, 255], parent='candle_plot'))
             # sell operation
             elif backend['buysNsells'][candle] < 0:
-                dpg.add_plot_annotation(label="", default_value=(
-                    marketData.time[candle], marketData.low[candle]), offset=(0, 20), color=[255, 0, 0, 255], parent='candle_plot')
+                self.annotations.append(dpg.add_plot_annotation(label="", default_value=(
+                    marketData.time[candle], marketData.low[candle]), offset=(0, 20), color=[255, 0, 0, 255], parent='candle_plot'))
