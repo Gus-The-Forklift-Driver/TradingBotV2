@@ -14,14 +14,14 @@ client = Client(ReadAndWrite['Api Key'], ReadAndWrite['Secret Key'])
 #ethEur = client.get_klines(symbol='ETHEUR', interval='15m', limit=200)
 btcEur = client.get_historical_klines(
     'BTCEUR', '15m', "15 Nov, 2021", "19 Nov, 2021")
-ethEur = client.get_historical_klines(
-    'ETHEUR', '15m', "15 Nov, 2021", "19 Nov, 2021")
-BTCEUR = marketData(btcEur)
-ETHEUR = marketData(ethEur)
+
+global Market
+Market = marketData(btcEur)
+
 
 # parameters of the strategy
 parameters = {"consecutiveGreen": 2, "consecutiveRed": 3,
-              "BuyMultiplier": 100, 'SellMultiplier': 25, 'BTCdata': BTCEUR}
+              "BuyMultiplier": 100, 'SellMultiplier': 25}
 
 #parameters = {}
 
@@ -32,31 +32,48 @@ test1 = strategy.buyTheRed(parameters)
 backend = backendTest(test1)
 
 # run the initial test
-results = backend.runTest(ETHEUR)
+results = backend.runTest(Market)
 
 # when a setting is changed update the backend test automaticaly
 
 
 def update(sender, app_data, user_data):
     if sender == 'simulation_update_button':
-        results = backend.runTest(ETHEUR)
-        viz.updateTest(ETHEUR, results)
+        results = backend.runTest(Market)
+        viz.updateTest(Market, results)
     else:
         parameters[sender] = int(app_data)
         backend.updateParameters(parameters)
-        results = backend.runTest(ETHEUR)
-        viz.updateTest(ETHEUR, results)
+        results = backend.runTest(Market)
+        viz.updateTest(Market, results)
 
 
 def update_market_data(sender, app_data):
-    print(dpg.get_value('FIAT currency'))
-    print(dpg.get_value('CRYPTO currency'))
-    print(dpg.get_value('market_start'))
-    print(dpg.get_value('maket_end'))
-    print(dpg.get_value('time_interval'))
+    FIAT = dpg.get_value('FIAT currency')
+    CRYPTO = dpg.get_value('CRYPTO currency')
+    start = dpg.get_value('market_start')
+    end = dpg.get_value('maket_end')
+    interval = dpg.get_value('time_interval')
+    global Market
+    if dpg.get_value('use_current_time'):
+        try:
+            data = client.get_klines(
+                symbol=CRYPTO+FIAT, interval=interval, limit=200)
+        except:
+            print('failed to fetch market data')
+        else:
+            Market = marketData(data)
+    else:
+        try:
+            data = client.get_historical_klines(
+                CRYPTO+FIAT, interval, start, end)
+        except:
+            print('failed to fetch market data')
+        else:
+            Market = marketData(data)
 
 
 # create and show main ui
 viz = ui()
-viz.create_main_ui(ETHEUR, test1, update, update_market_data, results)
+viz.create_main_ui(Market, test1, update, update_market_data, results)
 viz.show_ui()

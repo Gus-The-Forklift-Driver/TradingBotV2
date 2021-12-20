@@ -36,9 +36,9 @@ class ui():
                     tag='d_line', callback=self.update_draggable_line, default_value=marketData.time[5])
                 xAxis = dpg.add_plot_axis(
                     dpg.mvXAxis, label='Dates', time=True)
-                with dpg.plot_axis(dpg.mvYAxis, label='EUR'):
+                with dpg.plot_axis(dpg.mvYAxis, label='FIAT'):
                     dpg.add_candle_series(dates=marketData.time, opens=marketData.open, highs=marketData.high,
-                                          lows=marketData.low, closes=marketData.close, label='BTC')
+                                          lows=marketData.low, closes=marketData.close, label='CRYPTO', tag='candle_series')
                     dpg.fit_axis_data(dpg.top_container_stack())
                 dpg.fit_axis_data(xAxis)
             # create parameter manipulators
@@ -123,13 +123,14 @@ class ui():
                     label="Quit", callback=lambda: dpg.destroy_context())
 
     def updateTest(self, marketData, backend):
+        dpg.set_value('candle_series', [
+                      marketData.time, marketData.open, marketData.close, marketData.high, marketData.low])
         for result in backend:
             if type(backend[result]) == int or type(backend[result]) == float:
                 dpg.set_value(str(result), backend[result])
             elif type(backend[result]) == list:
                 dpg.set_value(str(result), [marketData.time, backend[result]])
 
-        print(self.annotations)
         for i in self.annotations:
             dpg.delete_item(i)
         self.annotations = []
