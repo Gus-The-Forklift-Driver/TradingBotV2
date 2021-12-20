@@ -27,10 +27,10 @@ class ui():
         dpg.set_value('d_line', val)
         dpg.set_value('d_line_sub', val)
 
-    def create_main_ui(self, marketData, strategy, callback, backend):
-        with dpg.window():
+    def create_main_ui(self, marketData, strategy, update_ui, update_market_data, backend):
+        with dpg.window(label='main candle graph', no_close=True):
             # create main graph
-            with dpg.plot(tag='candle_plot', width=-1, height=400):
+            with dpg.plot(tag='candle_plot', width=-1, height=-1):
                 dpg.add_plot_legend()
                 dpg.add_drag_line(
                     tag='d_line', callback=self.update_draggable_line, default_value=marketData.time[5])
@@ -42,7 +42,7 @@ class ui():
                     dpg.fit_axis_data(dpg.top_container_stack())
                 dpg.fit_axis_data(xAxis)
             # create parameter manipulators
-        with dpg.window(label='parameters'):
+        with dpg.window(label='parameters', no_close=True):
             with dpg.table(header_row=False):
                 dpg.add_table_column()
                 for key in strategy.vars:
@@ -50,8 +50,8 @@ class ui():
                         dpg.add_input_text(
                             label=str(key),
                             tag=str(key), decimal=True, default_value=strategy.vars[key],
-                            callback=callback)
-        with dpg.window(label='subplots'):
+                            callback=update_ui)
+        with dpg.window(label='subplots', no_close=True):
             # create subplots
             with dpg.plot(width=-1, height=-1):
                 dpg.add_plot_legend()
@@ -63,7 +63,7 @@ class ui():
                         if type(backend[result]) == list:
                             dpg.add_line_series(tag=str(result), label=str(
                                 result), x=marketData.time, y=backend[result])
-        with dpg.window(label='stats'):
+        with dpg.window(label='stats', no_close=True):
             # create stats
             with dpg.table(header_row=False, borders_innerH=True, borders_innerV=True):
                 dpg.add_table_column()
@@ -75,6 +75,46 @@ class ui():
                             dpg.add_text(tag=str(result),
                                          default_value=backend[result])
 
+        with dpg.window(label='market data settings', no_close=True):
+            # create the market data to fetch
+            with dpg.table(header_row=False, borders_innerH=True, borders_innerV=True):
+                dpg.add_table_column()
+                dpg.add_table_column()
+                with dpg.table_row():
+                    dpg.add_text('FIAT currency')
+                    dpg.add_input_text(
+                        uppercase=True, no_spaces=True, default_value='EUR', tag='FIAT currency')
+                with dpg.table_row():
+                    dpg.add_text('CRYPTO currency')
+                    dpg.add_input_text(
+                        uppercase=True, no_spaces=True, hexadecimal=True, default_value='BTC', tag='CRYPTO currency')
+                # test duration input
+                with dpg.table_row():
+                    dpg.add_text('Start')
+                    dpg.add_date_picker(level=0, default_value={
+                        'month_day': 1, 'month': 0, 'year': 121, 'week_day': 5}, tag='market_start')
+                with dpg.table_row():
+                    dpg.add_text('End')
+                    with dpg.group():
+                        dpg.add_checkbox(
+                            label='Use Current time', tag='use_current_time', default_value=True, callback=lambda: dpg.configure_item('maket_end', show=not dpg.get_item_configuration('maket_end')['show']))
+                        dpg.add_date_picker(show=False, tag='maket_end')
+                with dpg.table_row():
+                    dpg.add_text('Time Interval')
+                    dpg.add_combo(['1m', '3m', '5m', '15m', '30m',
+                                  '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M'], default_value='5m', tag='time_interval')
+                with dpg.table_row():
+                    dpg.add_text('Update Market Data')
+                    dpg.add_button(label='Update', callback=update_market_data)
+
+        with dpg.window(label='Simulation Settings', no_close=True):
+            with dpg.table(header_row=False):
+                dpg.add_table_column()
+                dpg.add_table_column()
+                with dpg.table_row():
+                    dpg.add_checkbox(label='Auto Update', enabled=False)
+                    dpg.add_button(
+                        label='Update', tag='simulation_update_button', callback=update_ui)
         with dpg.menu_bar(parent='main_window'):
             with dpg.menu(label="File"):
                 dpg.add_menu_item(
@@ -83,15 +123,6 @@ class ui():
                     label="Quit", callback=lambda: dpg.destroy_context())
 
     def updateTest(self, marketData, backend):
-        # update the graphs
-        #
-        # dpg.set_value('balance_over_time', [
-        #              marketData.time, backend['BalanceOverTime']])
-        # dpg.set_value('eur_over_time', [
-        #              marketData.time, backend['EurOverTime']])
-        # dpg.set_value('compared_performance', [
-        #              marketData.time, backend['ComparedPerformance']])
-        # update the value table
         for result in backend:
             if type(backend[result]) == int or type(backend[result]) == float:
                 dpg.set_value(str(result), backend[result])

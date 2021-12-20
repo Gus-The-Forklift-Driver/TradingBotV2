@@ -5,6 +5,7 @@ from backend import backendTest
 import strategy
 from secret import ReadAndWrite
 from binance.client import Client
+import dearpygui.dearpygui as dpg
 
 client = Client(ReadAndWrite['Api Key'], ReadAndWrite['Secret Key'])
 
@@ -37,13 +38,25 @@ results = backend.runTest(ETHEUR)
 
 
 def update(sender, app_data, user_data):
-    parameters[sender] = int(app_data)
-    backend.updateParameters(parameters)
-    results = backend.runTest(ETHEUR)
-    viz.updateTest(ETHEUR, results)
+    if sender == 'simulation_update_button':
+        results = backend.runTest(ETHEUR)
+        viz.updateTest(ETHEUR, results)
+    else:
+        parameters[sender] = int(app_data)
+        backend.updateParameters(parameters)
+        results = backend.runTest(ETHEUR)
+        viz.updateTest(ETHEUR, results)
+
+
+def update_market_data(sender, app_data):
+    print(dpg.get_value('FIAT currency'))
+    print(dpg.get_value('CRYPTO currency'))
+    print(dpg.get_value('market_start'))
+    print(dpg.get_value('maket_end'))
+    print(dpg.get_value('time_interval'))
 
 
 # create and show main ui
 viz = ui()
-viz.create_main_ui(ETHEUR, test1, update, results)
+viz.create_main_ui(ETHEUR, test1, update, update_market_data, results)
 viz.show_ui()
