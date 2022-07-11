@@ -31,16 +31,16 @@ class marketData():
         self.high = []
         self.low = []
         self.close = []
-        self.volume = []
-        self.trades = []
+        #self.volume = []
+        #self.trades = []
         for candles in data:
             self.time.append(int(candles[0])/1000)
             self.open.append(float(candles[1]))
             self.high.append(float(candles[2]))
             self.low.append(float(candles[3]))
             self.close.append(float(candles[4]))
-            self.volume.append(float(candles[5]))
-            self.trades.append(float(candles[8]))
+            # self.volume.append(float(candles[5]))
+            # self.trades.append(float(candles[8]))
         self.highestPrice = max(self.high)
         self.lowestPrice = min(self.low)
         self.start = self.time[0]
